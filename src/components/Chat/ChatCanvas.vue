@@ -12,7 +12,7 @@ const flowStore = useFlowStore()
 interface OutputItem {
   label: string
   content: string
-  time: string  
+  time: string
 }
 
 const chatHistory = reactive({ list: [] as OutputItem[] })
@@ -53,9 +53,13 @@ const send = () => {
           <span class="badge" v-if="item.label">{{ item.label }}</span>
           <p class="flex-1 whitespace-pre-line">
             {{ item.content }}
-          </p>          
+          </p>
         </div>
       </div>
+    </div>
+    <div class="text-center">
+      By <a href="https://alanj.in" class="underline">Alan Jin</a>, Github
+      <a href="https://github.com/AlanJinqs/0x0G-An_AI_Playground_Canvas" class="underline"> Link </a>
     </div>
   </div>
 </template>
