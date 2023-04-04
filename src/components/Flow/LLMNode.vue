@@ -10,6 +10,9 @@ const props = defineProps({
     required: false
   }
 })
+
+const emits = defineEmits(["freeze", "defreeze"])
+
 </script>
 
 <template>

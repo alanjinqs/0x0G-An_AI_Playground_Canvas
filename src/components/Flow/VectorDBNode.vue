@@ -11,6 +11,9 @@ const props = defineProps({
     required: false
   }
 })
+
+const emits = defineEmits(["freeze", "defreeze"])
+
 </script>
 
 <template>
@@ -34,24 +37,32 @@ const props = defineProps({
           <option value="chroma-ada">Chroma & Ada-02 (OpenAI)</option>
         </select>
         <input
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
           v-model="data.data.vectorDbUrl"
           type="text"
           placeholder="Database Endpoint URL"
           class="input input-sm w-full max-w-xs"
         />
         <input
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
           v-model="data.data.collectionName"
           type="text"
           placeholder="Collection Name"
           class="input input-sm w-full max-w-xs"
         />
         <input
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
           v-model="data.data.joinBy"
           type="text"
           placeholder="Join By (e.g. \n))"
           class="input input-sm w-full max-w-xs"
         />
         <input
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
           v-model="data.data.numberOfResults"
           type="number"
           placeholder="Number of Results"

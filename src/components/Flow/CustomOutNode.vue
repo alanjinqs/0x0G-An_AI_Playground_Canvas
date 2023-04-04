@@ -11,6 +11,8 @@ const props = defineProps({
     required: false
   }
 })
+
+const emits = defineEmits(["freeze", "defreeze"])
 </script>
 
 <template>
@@ -32,6 +34,8 @@ const props = defineProps({
       <div class="card-body">
         <h2 class="card-title">Output</h2>
         <input
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
           v-model="data.data.label"
           type="text"
           placeholder="Label"

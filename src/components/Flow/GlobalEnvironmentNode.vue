@@ -7,6 +7,8 @@ defineProps({
     required: true
   }
 })
+
+const emits = defineEmits(["freeze", "defreeze"])
 </script>
 
 <template>
@@ -17,13 +19,25 @@ defineProps({
         <label class="label">
           <span class="label-text">OpenAI API Key</span>
         </label>
-        <input type="password" v-model="data.data.openAIApiKey" class="input input-sm w-full max-w-xs text-xs" />
+        <input
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
+          type="password"
+          v-model="data.data.openAIApiKey"
+          class="input input-sm w-full max-w-xs text-xs"
+        />
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label">
           <span class="label-text">OpenAI URL</span>
         </label>
-        <input type="text" v-model="data.data.openAIUrl" class="input input-sm w-full max-w-xs text-xs" />
+        <input
+          type="text"
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
+          v-model="data.data.openAIUrl"
+          class="input input-sm w-full max-w-xs text-xs"
+        />
       </div>
     </div>
   </div>

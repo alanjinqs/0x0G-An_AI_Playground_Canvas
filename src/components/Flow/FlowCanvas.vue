@@ -21,7 +21,37 @@ import CustomOutNode from "./CustomOutNode.vue"
 import CustomInNode from "./CustomInNode.vue"
 
 const flowStore = useFlowStore()
-const { updateEdge, addEdges, addNodes } = useVueFlow()
+const {
+  updateEdge,
+  addEdges,
+  addNodes,
+  nodesDraggable,
+  nodesConnectable,
+  elementsSelectable,
+  zoomOnScroll,
+  zoomOnDoubleClick,
+  zoomOnPinch,
+  panOnScroll,
+  panOnDrag
+} = useVueFlow()
+
+const freeze = () => {
+  nodesDraggable.value = false
+  nodesConnectable.value = false
+  zoomOnScroll.value = false
+  zoomOnDoubleClick.value = false
+  zoomOnPinch.value = false
+  panOnDrag.value = false
+}
+
+const defreeze = () => {
+  nodesDraggable.value = true
+  nodesConnectable.value = true
+  zoomOnScroll.value = true
+  zoomOnDoubleClick.value = true
+  zoomOnPinch.value = true
+  panOnDrag.value = true
+}
 
 const isShowingDagAlert = ref(false)
 
@@ -112,6 +142,9 @@ const uploadFile = (event: any) => {
         </li>
       </ul>
     </div>
+    <button class="text-sm absolute bottom-4 right-4 z-40" v-if="!nodesDraggable">
+      <img src="@/assets/icon/freeze.svg" class="h-4 w-4 invert" />
+    </button>
     <VueFlow
       v-model="flowStore.elements"
       class="h-screen"
@@ -122,22 +155,47 @@ const uploadFile = (event: any) => {
       <Background />
 
       <template #node-vector-db="data">
-        <VectorDBNode :data="data" :status="flowStore.currentProcess[data.id]" />
+        <VectorDBNode
+          :data="data"
+          :status="flowStore.currentProcess[data.id]"
+          @freeze="freeze"
+          @defreeze="defreeze"
+        />
       </template>
       <template #node-llm="data">
-        <LLMNode :data="data" :status="flowStore.currentProcess[data.id]" />
+        <LLMNode
+          :data="data"
+          :status="flowStore.currentProcess[data.id]"
+          @freeze="freeze"
+          @defreeze="defreeze"
+        />
       </template>
       <template #node-concat="data">
-        <ConcatStringNode :data="data" :status="flowStore.currentProcess[data.id]" />
+        <ConcatStringNode
+          :data="data"
+          :status="flowStore.currentProcess[data.id]"
+          @freeze="freeze"
+          @defreeze="defreeze"
+        />
       </template>
       <template #node-environment="data">
-        <GlobalEnvironmentNode :data="data" :status="flowStore.currentProcess[data.id]" />
+        <GlobalEnvironmentNode
+          :data="data"
+          :status="flowStore.currentProcess[data.id]"
+          @freeze="freeze"
+          @defreeze="defreeze"
+        />
       </template>
       <template #node-custom-in="data">
         <CustomInNode :data="data" :status="flowStore.currentProcess[data.id]" />
       </template>
       <template #node-custom-out="data">
-        <CustomOutNode :data="data" :status="flowStore.currentProcess[data.id]" />
+        <CustomOutNode
+          :data="data"
+          :status="flowStore.currentProcess[data.id]"
+          @freeze="freeze"
+          @defreeze="defreeze"
+        />
       </template>
     </VueFlow>
   </div>

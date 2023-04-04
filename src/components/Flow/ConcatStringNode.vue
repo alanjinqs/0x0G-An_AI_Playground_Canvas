@@ -11,6 +11,8 @@ defineProps({
     required: false
   }
 })
+
+const emits = defineEmits(["freeze", "defreeze"])
 </script>
 
 <template>
@@ -32,6 +34,8 @@ defineProps({
       <div class="card-body">
         <h2 class="card-title">Concat String</h2>
         <textarea
+          @focus="emits('freeze')"
+          @blur="emits('defreeze')"
           v-model="data.data.stringTemplate"
           class="textarea resize-none hover:resize-y textarea-sm w-80 h-60 leading-tight"
         ></textarea>
