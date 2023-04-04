@@ -41,7 +41,7 @@ const send = () => {
     <div class="w-full text-center">
       <div class="btn-group">
         <button class="btn btn-active" @click="send">Send</button>
-        <button class="btn" @click="logTestMessage">test</button>
+        <!-- <button class="btn" @click="logTestMessage">test</button> -->
       </div>
     </div>
     <div
