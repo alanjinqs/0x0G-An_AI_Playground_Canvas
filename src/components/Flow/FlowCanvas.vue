@@ -142,9 +142,15 @@ const uploadFile = (event: any) => {
         </li>
       </ul>
     </div>
-    <button class="text-sm absolute bottom-4 right-4 z-40" v-if="!nodesDraggable">
-      <img src="@/assets/icon/freeze.svg" class="h-4 w-4 invert" />
-    </button>
+    <div
+      v-if="!nodesDraggable"
+      class="tooltip absolute bottom-4 right-4 z-40"
+      data-tip="The graph will freeze when you focus on any input. Click anywhere to de-focus"
+    >
+      <button>
+        <img src="@/assets/icon/freeze.svg" class="h-6 w-6 invert" />
+      </button>
+    </div>
     <VueFlow
       v-model="flowStore.elements"
       class="h-screen"
