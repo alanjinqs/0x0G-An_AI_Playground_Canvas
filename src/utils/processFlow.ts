@@ -90,6 +90,56 @@ export const processFlow = async (
         })
         resultForEachStep.set(element.id, vectorDbRes.data)
         break
+      case "http":
+        const httpInEdges: any[] = flowStore.getEdgesByTargetId(element.id)
+        let httpBody = ""
+        try {
+          httpBody = resultForEachStep.get(
+            httpInEdges.find((edge) => {
+              return edge.targetHandle === "http-body"
+            }).source
+          ) || ""
+        } catch {}
+
+        let httpHeaders = {}
+        try {
+          httpHeaders = JSON.parse(
+            resultForEachStep.get(
+              httpInEdges.find((edge) => {
+                return edge.targetHandle === "http-headers"
+              }).source
+            ) || "{}"
+          )
+        } catch {}
+
+        let httpQuery = {}
+        try {
+          httpQuery = JSON.parse(
+            resultForEachStep.get(
+              httpInEdges.find((edge) => {
+                return edge.targetHandle === "http-query"
+              }).source
+            ) || "{}"
+          )
+        } catch {}
+        console.log({
+          method: node.data.method,
+          url: node.data.url,
+          data: httpBody,
+          headers: httpHeaders,
+          params: httpQuery
+        }
+        )
+
+        const httpRes = await axios({
+          method: node.data.method,
+          url: node.data.url,
+          data: httpBody,
+          headers: httpHeaders,
+          params: httpQuery
+        })
+        resultForEachStep.set(element.id, JSON.stringify(httpRes.data))
+        break
     }
     flowStore.currentProcess[node.id] = "finished"
   }

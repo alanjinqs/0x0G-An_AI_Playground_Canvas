@@ -19,6 +19,7 @@ import { isDag } from "@/utils/graph"
 import { ref } from "vue"
 import CustomOutNode from "./CustomOutNode.vue"
 import CustomInNode from "./CustomInNode.vue"
+import HTTPNode from "./HTTPNode.vue"
 
 const flowStore = useFlowStore()
 const {
@@ -125,8 +126,9 @@ const uploadFile = (event: any) => {
       <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-neutral rounded-box w-64">
         <li><a @click="addCustomNodes('llm')">LLM</a></li>
         <li><a @click="addCustomNodes('vector-db')">Vector DB & Embedder</a></li>
-        <li><a @click="addCustomNodes('concat')">Concat String</a></li>
+        <li><a @click="addCustomNodes('concat')">String</a></li>
         <li><a @click="addCustomNodes('custom-out')">Output</a></li>
+        <li><a @click="addCustomNodes('http')">HTTP(s)</a></li>
       </ul>
     </div>
     <div class="dropdown dropdown-end absolute top-4 right-4 z-40">
@@ -197,6 +199,14 @@ const uploadFile = (event: any) => {
       </template>
       <template #node-custom-out="data">
         <CustomOutNode
+          :data="data"
+          :status="flowStore.currentProcess[data.id]"
+          @freeze="freeze"
+          @defreeze="defreeze"
+        />
+      </template>
+      <template #node-http="data">
+        <HTTPNode
           :data="data"
           :status="flowStore.currentProcess[data.id]"
           @freeze="freeze"
