@@ -32,7 +32,7 @@ const emits = defineEmits(["freeze", "defreeze"])
 
     <div class="card bg-neutral">
       <div class="card-body">
-        <h2 class="card-title">Concat String</h2>
+        <h2 class="card-title">String</h2>
         <textarea
           @focus="emits('freeze')"
           @blur="emits('defreeze')"
