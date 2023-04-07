@@ -67,10 +67,10 @@ const downloadChat = () => {
               md
             </button>
           </div>
-          <article class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5">
-            <v-md-preview :text="item.content" v-if="item.isMarkdown" />
-            <div v-else>{{ item.content }}</div>
+          <article class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5" v-if="item.isMarkdown" >
+            <v-md-preview :text="item.content"/>
           </article>
+          <article v-else class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5 whitespace-pre-line">{{ item.content }}</article>
         </div>
       </div>
     </div>
