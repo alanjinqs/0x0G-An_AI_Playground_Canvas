@@ -31,117 +31,121 @@ export const processFlow = async (
     const node = element as any //TODO: fix this
     console.log(node)
     flowStore.currentProcess[node.id] = "running"
-    switch (element.type) {
-      case "custom-in":
-        resultForEachStep.set(element.id, questionIn)
-        break
-      case "custom-out":
-        const edge: any = flowStore.getEdgesByTargetId(element.id)[0]
-        console.log(`[OUTPUT] ${node.data.label} ${resultForEachStep.get(edge.source)}`)
-        outputFunc(node.data.label, resultForEachStep.get(edge.source) || "")
-        break
-      case "concat":
-        const edges: any[] = flowStore.getEdgesByTargetId(element.id)
-        let res = node.data.stringTemplate
-        for (const edge of edges) {
-          const sourceValue = resultForEachStep.get(edge.source)
-          const handelId = edge.targetHandle.split("-").pop()
-          res = res.replace(`{{${handelId}}}`, sourceValue)
-        }
-        resultForEachStep.set(element.id, res)
-        break
-      case "llm":
-        const llmInEdges: any[] = flowStore.getEdgesByTargetId(node.id)
-        const systemMessage = resultForEachStep.get(
-          llmInEdges.find((edge) => {
-            return edge.targetHandle === "llm-system"
-          }).source
-        )
-        const promptMessage = resultForEachStep.get(
-          llmInEdges.find((edge) => {
-            return edge.targetHandle === "llm-prompt"
-          }).source
-        )
-        resultForEachStep.set(
-          element.id,
-          await processLLM(
-            environment.openAIUrl,
-            environment.openAIApiKey,
-            node.data.model,
-            systemMessage || "",
-            promptMessage || ""
-          )
-        )
-        break
-
-      case "vector-db":
-        const vectorDbInEdge: any = flowStore.getEdgesByTargetId(element.id)[0]
-        const vectorDbIn = resultForEachStep.get(vectorDbInEdge.source)
-        const collectionName = node.data.collectionName
-        const joinBy = node.data.joinBy
-        const numberOfResults = node.data.numberOfResults
-        const vectorDbUrl =  node.data.vectorDbUrl
-        const vectorDbRes = await axios.post(vectorDbUrl, {
-          apiKey: environment.openAIApiKey,
-          text: vectorDbIn,
-          collectionName,
-          joinBy,
-          numberOfResults
-        })
-        resultForEachStep.set(element.id, vectorDbRes.data)
-        break
-      case "http":
-        const httpInEdges: any[] = flowStore.getEdgesByTargetId(element.id)
-        let httpBody = ""
-        try {
-          httpBody = resultForEachStep.get(
-            httpInEdges.find((edge) => {
-              return edge.targetHandle === "http-body"
+    try {
+      switch (element.type) {
+        case "custom-in":
+          resultForEachStep.set(element.id, questionIn)
+          break
+        case "custom-out":
+          const edge: any = flowStore.getEdgesByTargetId(element.id)[0]
+          console.log(`[OUTPUT] ${node.data.label} ${resultForEachStep.get(edge.source)}`)
+          outputFunc(node.data.label, resultForEachStep.get(edge.source) || "")
+          break
+        case "concat":
+          const edges: any[] = flowStore.getEdgesByTargetId(element.id)
+          let res = node.data.stringTemplate
+          for (const edge of edges) {
+            const sourceValue = resultForEachStep.get(edge.source)
+            const handelId = edge.targetHandle.split("-").pop()
+            res = res.replace(`{{${handelId}}}`, sourceValue)
+          }
+          resultForEachStep.set(element.id, res)
+          break
+        case "llm":
+          const llmInEdges: any[] = flowStore.getEdgesByTargetId(node.id)
+          const systemMessage = resultForEachStep.get(
+            llmInEdges.find((edge) => {
+              return edge.targetHandle === "llm-system"
             }).source
-          ) || ""
-        } catch {}
-
-        let httpHeaders = {}
-        try {
-          httpHeaders = JSON.parse(
-            resultForEachStep.get(
-              httpInEdges.find((edge) => {
-                return edge.targetHandle === "http-headers"
-              }).source
-            ) || "{}"
           )
-        } catch {}
-
-        let httpQuery = {}
-        try {
-          httpQuery = JSON.parse(
-            resultForEachStep.get(
-              httpInEdges.find((edge) => {
-                return edge.targetHandle === "http-query"
-              }).source
-            ) || "{}"
+          const promptMessage = resultForEachStep.get(
+            llmInEdges.find((edge) => {
+              return edge.targetHandle === "llm-prompt"
+            }).source
           )
-        } catch {}
-        console.log({
-          method: node.data.method,
-          url: node.data.url,
-          data: httpBody,
-          headers: httpHeaders,
-          params: httpQuery
-        }
-        )
+          resultForEachStep.set(
+            element.id,
+            await processLLM(
+              environment.openAIUrl,
+              environment.openAIApiKey,
+              node.data.model,
+              systemMessage || "",
+              promptMessage || ""
+            )
+          )
+          break
 
-        const httpRes = await axios({
-          method: node.data.method,
-          url: node.data.url,
-          data: httpBody,
-          headers: httpHeaders,
-          params: httpQuery
-        })
-        resultForEachStep.set(element.id, JSON.stringify(httpRes.data))
-        break
+        case "vector-db":
+          const vectorDbInEdge: any = flowStore.getEdgesByTargetId(element.id)[0]
+          const vectorDbIn = resultForEachStep.get(vectorDbInEdge.source)
+          const collectionName = node.data.collectionName
+          const joinBy = node.data.joinBy
+          const numberOfResults = node.data.numberOfResults
+          const vectorDbUrl = node.data.vectorDbUrl
+          const vectorDbRes = await axios.post(vectorDbUrl, {
+            apiKey: environment.openAIApiKey,
+            text: vectorDbIn,
+            collectionName,
+            joinBy,
+            numberOfResults
+          })
+          resultForEachStep.set(element.id, vectorDbRes.data)
+          break
+        case "http":
+          const httpInEdges: any[] = flowStore.getEdgesByTargetId(element.id)
+          let httpBody = ""
+          try {
+            httpBody =
+              resultForEachStep.get(
+                httpInEdges.find((edge) => {
+                  return edge.targetHandle === "http-body"
+                }).source
+              ) || ""
+          } catch {}
+
+          let httpHeaders = {}
+          try {
+            httpHeaders = JSON.parse(
+              resultForEachStep.get(
+                httpInEdges.find((edge) => {
+                  return edge.targetHandle === "http-headers"
+                }).source
+              ) || "{}"
+            )
+          } catch {}
+
+          let httpQuery = {}
+          try {
+            httpQuery = JSON.parse(
+              resultForEachStep.get(
+                httpInEdges.find((edge) => {
+                  return edge.targetHandle === "http-query"
+                }).source
+              ) || "{}"
+            )
+          } catch {}
+          console.log({
+            method: node.data.method,
+            url: node.data.url,
+            data: httpBody,
+            headers: httpHeaders,
+            params: httpQuery
+          })
+
+          const httpRes = await axios({
+            method: node.data.method,
+            url: node.data.url,
+            data: httpBody,
+            headers: httpHeaders,
+            params: httpQuery
+          })
+          resultForEachStep.set(element.id, JSON.stringify(httpRes.data))
+          break
+      }
+      flowStore.currentProcess[node.id] = "finished"
+    } catch {
+      flowStore.currentProcess[node.id] = "error"
     }
-    flowStore.currentProcess[node.id] = "finished"
   }
 }
 

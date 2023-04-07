@@ -27,7 +27,9 @@ const emits = defineEmits(["freeze", "defreeze"])
           ? 'badge-primary'
           : status == 'finished'
           ? 'badge-success'
-          : 'badge-warning'
+          : status == 'error'
+          ? 'badge-error'
+          :'badge-warning'
       ]"
     ></span>
 
