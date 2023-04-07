@@ -6,5 +6,5 @@ module.exports = {
   theme: {
     extend: {}
   },
-  plugins: [require("daisyui"), require("tailwind-scrollbar")]
+  plugins: [require("@tailwindcss/typography"), require("daisyui"), require("tailwind-scrollbar")]
 }

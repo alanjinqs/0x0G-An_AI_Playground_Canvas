@@ -14,6 +14,7 @@ interface OutputItem {
   label: string
   content: string
   time: string
+  isMarkdown: boolean
 }
 
 const chatHistory = reactive({ list: [] as OutputItem[] })
@@ -24,7 +25,7 @@ const logTestMessage = () => {
 }
 
 const addToList = (label: string, content: string) => {
-  chatHistory.list.push({ label, content, time: dayjs().format("HH:mm:ss") })
+  chatHistory.list.push({ label, content, time: dayjs().format("HH:mm:ss"), isMarkdown: false })
 }
 
 const send = () => {
@@ -53,15 +54,23 @@ const downloadChat = () => {
       class="flex-1 overflow-y-auto scrollbar-thin scrollbar-rounded-full scrollbar-thumb-gray-400"
     >
       <div class="w-full flex justify-end">
-        <button v-if="chatHistory.list.length !== 0" class="btn btn-link" @click="downloadChat">Download</button>
+        <button v-if="chatHistory.list.length !== 0" class="btn btn-link" @click="downloadChat">
+          Download
+        </button>
       </div>
       <div v-for="(item, i) in chatHistory.list" :key="i">
         <div class="divider">{{ item.time }}</div>
         <div class="flex gap-5">
-          <span class="badge" v-if="item.label">{{ item.label }}</span>
-          <p class="flex-1 whitespace-pre-line">
-            {{ item.content }}
-          </p>
+          <div class="flex flex-col items-end">
+            <span class="badge" v-if="item.label">{{ item.label }} </span>
+            <button class="btn btn-xs mt-2 btn-accent" @click="item.isMarkdown = !item.isMarkdown">
+              md
+            </button>
+          </div>
+          <article class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5">
+            <v-md-preview :text="item.content" v-if="item.isMarkdown" />
+            <div v-else>{{ item.content }}</div>
+          </article>
         </div>
       </div>
     </div>
