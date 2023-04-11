@@ -36,7 +36,7 @@ const emits = defineEmits(["freeze", "defreeze"])
       <div class="card-body">
         <h2 class="card-title">Vector DB & Embedder</h2>
         <select class="select select-sm w-full max-w-xs" v-model="data.data.db">
-          <option value="chroma-ada">Chroma & Ada-02 (OpenAI)</option>
+          <option value="custom-endpoint">Custom Endpoint</option>
         </select>
         <input
           @focus="emits('freeze')"
