@@ -5,7 +5,7 @@ import { isDag, topologySort } from "@/utils/graph"
 import { processFlow } from "@/utils/processFlow"
 import dayjs from "dayjs"
 import fileDownload from "js-file-download"
-
+import * as htmlToImage from "html-to-image"
 const inputQuestion = ref("")
 
 const flowStore = useFlowStore()
@@ -63,14 +63,20 @@ const downloadChat = () => {
         <div class="flex gap-5">
           <div class="flex flex-col items-end">
             <span class="badge" v-if="item.label">{{ item.label }} </span>
-            <button class="btn btn-xs mt-2 btn-accent" @click="item.isMarkdown = !item.isMarkdown">
-              md
-            </button>
+            <button class="btn btn-xs mt-2" @click="item.isMarkdown = !item.isMarkdown">md</button>
           </div>
-          <article class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5" v-if="item.isMarkdown" >
-            <v-md-preview :text="item.content"/>
+          <article
+            class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5"
+            v-if="item.isMarkdown"
+          >
+            <v-md-preview :text="item.content" />
           </article>
-          <article v-else class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5 whitespace-pre-line">{{ item.content }}</article>
+          <article
+            v-else
+            class="flex-1 prose max-w-none prose-pre:mt-0.5 prose-pre:mb-0.5 whitespace-pre-line"
+          >
+            {{ item.content }}
+          </article>
         </div>
       </div>
     </div>
